@@ -71,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements SearchedImagesAda
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filter(newText);
+                handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable, 1500);
                 return true;
             }
         });
@@ -104,6 +105,15 @@ public class MainActivity extends AppCompatActivity implements SearchedImagesAda
             }
         });
     }
+
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            String newText = searchView.getQuery().toString();
+            filter(newText);
+        }
+    };
 
     private void scrollingFunc(String newText) {
         progressBar.setVisibility(View.VISIBLE);
@@ -151,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements SearchedImagesAda
 
     private void filter(String newText) {
         progressBar.setVisibility(View.VISIBLE);
-
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
